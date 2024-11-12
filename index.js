@@ -23,5 +23,6 @@ app.use(checkForAuthenticationCookie("token"));
 
 app.use("/api/user", userRoute);
 app.use("/api/animal", animalRoute)
+app.use("/uploads", express.static("uploads"));
 
-app.listen(PORT, () => console.log("server started!!"));
+app.listen(PORT, () => console.log("server started on port 8000!!"));
