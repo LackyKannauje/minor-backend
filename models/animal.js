@@ -6,7 +6,7 @@ const animalSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ["adopted", "available for adoption", "needs rescue"],
+    enum: ["adopted", "available for adoption", "needs rescue", "missing"],
   },
   location: { type: String, required: false },
   contact: { type: String, required: false },

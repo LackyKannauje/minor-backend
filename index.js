@@ -17,6 +17,7 @@ mongoose
 
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
+app.use("/images", express.static("public/images"));
 app.use(express.json())
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("token"));
