@@ -1,26 +1,21 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
 const cors = require('cors')
+const dotenv = require('dotenv');
 const userRoute = require("./routes/user");
 const animalRoute = require('./routes/animal');
-const {
-  checkForAuthenticationCookie,
-} = require("./middlewares/authentication");
-
+dotenv.config();
 const app = express();
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/minor-app")
+  .connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/minor-app")
   .then((e) => console.log("mongodb connected!!"));
 
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use("/images", express.static("public/images"));
 app.use(express.json())
-app.use(cookieParser());
-app.use(checkForAuthenticationCookie("token"));
 
 app.use("/api/user", userRoute);
 app.use("/api/animal", animalRoute)
