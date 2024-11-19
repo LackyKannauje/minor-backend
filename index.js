@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const userRoute = require("./routes/user");
 const animalRoute = require('./routes/animal');
 dotenv.config();
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -14,8 +15,11 @@ mongoose
 
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
+
 app.use("/images", express.static("public/images"));
 app.use(express.json())
+app.use("/images", express.static(path.join(process.cwd(), 'images')));
+app.use("/uploads", express.static(path.join(process.cwd(), 'uploads')));
 
 app.use("/api/user", userRoute);
 app.use("/api/animal", animalRoute)

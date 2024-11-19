@@ -32,7 +32,7 @@ router.get("/userId/:id", async (req, res) => {
   try {
     const user = req.params.id;
     const animals = await Animal.find({ user });
-    if (!animals.length) {
+    if (!animals) {
       return res.status(404).json({ message: "Posts not found for the user" });
     }
     res.status(200).json(animals);
