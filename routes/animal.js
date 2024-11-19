@@ -4,17 +4,27 @@ const Animal = require("../models/animal");
 const authUser = require("../middlewares/auth");
 const User = require("../models/user");
 const router = express.Router();
+const { v2: cloudinary } = require("cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 // Configure multer for image upload
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/images");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Configure Cloudinary storage for Multer
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "minor-app-images", // Folder name in Cloudinary
+    format: async (req, file) => "jpg", // Optional: Format for images
+    public_id: (req, file) => `${Date.now()}-${file.originalname.split(".")[0]}`, // Generate unique file names
   },
 });
 
+// Multer middleware for file uploads
 const upload = multer({ storage: storage });
 
 
@@ -114,8 +124,8 @@ router.get("/case/:type", async (req, res) => {
 
 router.post("/add", authUser, upload.single("image"), async (req, res) => {
   const { category, caseType, description, location, contact } = req.body;
-  const user = req.user.id; // middleware --> user to the request
-  const image = req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : null;
+  const user = req.user.id; // User ID from auth middleware
+  const image = req.file ? req.file.path : null; // Cloudinary URL for the uploaded image
 
   const animal = new Animal({
     user,
